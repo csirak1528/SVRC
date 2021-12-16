@@ -1,4 +1,4 @@
-# ***Sirak-Hoffman Variable Rate Compression - SHVRC***
+# **Sirak-Hoffman Variable Rate Compression - SHVRC**
 ### Using multiprocessing to analyze networks and determine efficient compression models
 
 ## **Goals**

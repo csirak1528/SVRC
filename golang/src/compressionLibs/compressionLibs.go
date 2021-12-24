@@ -37,6 +37,7 @@ func InitCompression() {
 	for i := range supported {
 		alg := supported[i]
 		if benchmarks[alg] == nil || len(benchmarks[alg]) == 0 {
+
 			benchmarks[alg] = GetBenchmarks(alg)
 		}
 	}

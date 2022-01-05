@@ -8,13 +8,19 @@ import (
 )
 
 type CompressionAlgorithm struct {
-	CompressionRate  int
-	CompressionRatio int
-	Name             string
+	CompressionRate  int    `json:"rate"`
+	CompressionRatio int    `json:"ratio"`
+	Name             string `json:"name"`
 }
 
 var supported = []string{
 	"lz4",
+}
+
+func Check(e error) {
+	if e != nil {
+		panic(e)
+	}
 }
 
 func InitCompression() {

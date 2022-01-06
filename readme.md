@@ -12,6 +12,7 @@
 - [Golang](./go) >> *[Link to Project](https://go.dev/)*
 - [Python](./python) >> *[Link to Project](https://www.python.org/)*
 - [Rust](./rust) >> *[Link to Project](https://github.com/rust-lang/rust)*
+- [C](./c) >> *[Link to Project](https://www.cprogramming.com/)*
 
 
 ## **Supported Algorithms**

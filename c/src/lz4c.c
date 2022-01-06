@@ -1,7 +1,6 @@
 // https://github.com/lz4/lz4/blob/dev/examples/simple_buffer.c
 // Rahul Chalamala
 
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
@@ -11,13 +10,9 @@
 #include "lz4c.h"
 #include "utils.h"
 
-void lz4(const char* file_path, char** compressed_data, double* compression_ratio, double* compression_speed)
+void lz4(char** data, char** compressed_data, double* compression_ratio, double* compression_speed)
 {
-	char* data;
-
-	file_read(file_path, &data);
-
-	const int data_size = (int)(strlen(data) + 1);
+	const int data_size = (int)(strlen(*data) + 1);
 
 	const int max_compressed_size = LZ4_compressBound(data_size);
 
@@ -30,10 +25,10 @@ void lz4(const char* file_path, char** compressed_data, double* compression_rati
 	clock_t start, delta;
 
 	start = clock();
-	const int compressed_data_size = LZ4_compress_default(data, *compressed_data, data_size, max_compressed_size);
+	const int compressed_data_size = LZ4_compress_default(*data, *compressed_data, data_size, max_compressed_size);
 	delta = clock() - start;
 
-	*compression_speed = data_size / 1024.0 / 1024 / ((double)delta / CLOCKS_PER_SEC); // Mb/s
+	*compression_speed = data_size / 1048576.0 * ((double)CLOCKS_PER_SEC / delta); // MB/s
 
 	if(compressed_data_size <= 0)
 	{
@@ -65,25 +60,10 @@ void lz4(const char* file_path, char** compressed_data, double* compression_rati
 		fail("Decompressed data is different from original!\n", -1);
 	}
 
-	if(memcmp(data, uncompressed_data, data_size) != 0)
+	if(memcmp(*data, uncompressed_data, data_size) != 0)
 	{
 		fail("Validation failed. original and uncompressed data are not identical.", -1);
 	}
 
-	free(data);
 	free(uncompressed_data);
-}
-
-int main(void)
-{
-	//const char* const file_path = "/home/rahul/Documents/compression/SHVRC/testfiles/testfile.json";
-	const char* const file_path = "/home/rahul/Documents/compression/SHVRC/c/test.json";
-
-	char* compressed_data;
-	double compression_ratio, compression_speed;
-
-	lz4(file_path, &compressed_data, &compression_ratio, &compression_speed);
-
-	printf("Compression Ratio: %f\n", compression_ratio);
-	printf("Compression Speed (Mb/s): %f\n", compression_speed);
 }

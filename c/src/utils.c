@@ -3,7 +3,7 @@
 
 void fail(const char* message, const int code)
 {
-	fprintf(stderr, "%s \n", message);
+	fprintf(stderr, "%s\n", message);
 	exit(code);
 }
 
@@ -13,7 +13,8 @@ void file_read(const char* file_path, char** content)
 
 	if(!(fp = fopen(file_path, "rb")))  // Open the file in binary mode
 	{
-		fail("file not found", -1);
+		fprintf(stderr, "File not found: %s\n", file_path);
+		exit(-1);
 	}
 
 	fseek(fp, 0, SEEK_END);

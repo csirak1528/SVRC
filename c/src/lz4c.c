@@ -18,6 +18,7 @@ void lz4(const char* file_path, char** compressed_data, double* compression_rati
 	file_read(file_path, &data);
 
 	const int data_size = (int)(strlen(data) + 1);
+
 	const int max_compressed_size = LZ4_compressBound(data_size);
 
 	*compressed_data = (char*)malloc((size_t)max_compressed_size);
@@ -32,13 +33,13 @@ void lz4(const char* file_path, char** compressed_data, double* compression_rati
 	const int compressed_data_size = LZ4_compress_default(data, *compressed_data, data_size, max_compressed_size);
 	delta = clock() - start;
 
-	*compression_speed = data_size / 1000000.0 / ((double)delta / CLOCKS_PER_SEC); // Mb/s
+	*compression_speed = data_size / 1024.0 / 1024 / ((double)delta / CLOCKS_PER_SEC); // Mb/s
 
 	if(compressed_data_size <= 0)
 	{
 		fail("A 0 or negative result from LZ4_compress_default() indicates a failure trying to compress the data. ", 1);
 	}
-	*compression_ratio = (float)compressed_data_size / data_size;
+	*compression_ratio = (float)data_size / compressed_data_size;
 
 	*compressed_data = (char*)realloc(*compressed_data, (size_t)compressed_data_size); // reallocs memory to compressed_data_size
 	if(*compressed_data == NULL)
@@ -75,8 +76,8 @@ void lz4(const char* file_path, char** compressed_data, double* compression_rati
 
 int main(void)
 {
+	//const char* const file_path = "/home/rahul/Documents/compression/SHVRC/testfiles/testfile.json";
 	const char* const file_path = "/home/rahul/Documents/compression/SHVRC/c/test.json";
-	//const char* const file_path = "/home/rahul/Documents/compression/SHVRC/c/citylots.json";
 
 	char* compressed_data;
 	double compression_ratio, compression_speed;

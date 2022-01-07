@@ -15,3 +15,12 @@ rust/**/*.rs.bk
 
 # MSVC Windows builds of rustc generate these, which store debugging information
 rust/*.pdb
+
+# cmake buildlogs
+c/cmake-build-debug/
+
+# c test jsons
+c/*.json
+
+# cpp for now
+cpp/

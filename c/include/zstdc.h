@@ -1,6 +1,4 @@
-//
-// Created by rahul on 1/5/22.
-//
+// Rahul Chalamala
 
 #ifndef C_ZSTDC_H
 #define C_ZSTDC_H

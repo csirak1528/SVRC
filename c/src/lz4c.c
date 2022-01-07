@@ -17,6 +17,8 @@ void lz4(char** data, char** compressed_data, double* compression_ratio, double*
 	const int max_compressed_size = LZ4_compressBound(data_size);
 
 	*compressed_data = (char*)malloc((size_t)max_compressed_size);
+	memset(*compressed_data, 0, max_compressed_size);
+
 	if(*compressed_data == NULL)
 	{
 		fail("Failed to allocate memory for *compressed_data.", -1);
@@ -43,21 +45,23 @@ void lz4(char** data, char** compressed_data, double* compression_ratio, double*
 	}
 
 	char* uncompressed_data = (char*)malloc(data_size);
+	memset(uncompressed_data, 0, data_size);
+
 	if(uncompressed_data == NULL)
 	{
 		fail("Failed to allocate memory for *uncompressed_data.", -1);
 	}
 
-	const int decompressed_size = LZ4_decompress_safe(*compressed_data, uncompressed_data, compressed_data_size, data_size);
+	const int uncompressed_size = LZ4_decompress_safe(*compressed_data, uncompressed_data, compressed_data_size, data_size);
 
-	if(decompressed_size < 0)
+	if(uncompressed_size < 0)
 	{
-		fail("A negative result from LZ4_decompress_safe indicates a failure trying to decompress the data.  See exit code (echo $?) for value returned.", decompressed_size);
+		fail("A negative result from LZ4_uncompress_safe indicates a failure trying to uncompress the data.  See exit code (echo $?) for value returned.", uncompressed_size);
 	}
 
-	if(decompressed_size != data_size)
+	if(uncompressed_size != data_size)
 	{
-		fail("Decompressed data is different from original!\n", -1);
+		fail("uncompressed data is different from original!\n", -1);
 	}
 
 	if(memcmp(*data, uncompressed_data, data_size) != 0)

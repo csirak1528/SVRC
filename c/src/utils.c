@@ -7,7 +7,7 @@ void fail(const char* message, const int code)
 	exit(code);
 }
 
-void file_read(const char* file_path, char** content)
+int file_read(const char* file_path, char** content)
 {
 	FILE* fp;
 
@@ -18,14 +18,14 @@ void file_read(const char* file_path, char** content)
 	}
 
 	fseek(fp, 0, SEEK_END);
-	long len = ftell(fp);
-	fseek(fp, 0, SEEK_SET);
+	long size = ftell(fp);
+	rewind(fp);
 
-	if(!(*content = (char*)malloc(len * sizeof(char))))
+	if(!(*content = (char*)calloc(size, sizeof(char))))
 	{
 		fail("Failed to allocate memory\n", -1);
 	}
 
-	fread(*content, len, 1, fp);
+	fread(*content, size, 1, fp);
 	fclose(fp);
 }

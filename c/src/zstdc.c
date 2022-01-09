@@ -76,5 +76,3 @@ void zstd(char** data, char** compressed_data, double* compression_ratio, double
 
 	free(uncompressed_data);
 }
-
-

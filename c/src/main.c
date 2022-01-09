@@ -8,19 +8,20 @@
 
 #include "lz4c.h"
 #include "zstdc.h"
+#include "snappyc.h"
 
 const char* prefix = "/home/rahul/Documents/compression/SHVRC/testfiles/testfile.";
 
 #define TESTFILE_COUNT 2
-#define ALGORITHM_COUNT 2
+#define ALGORITHM_COUNT 3
 #define TRIALS 1000
 
 const char* filetypes[] = {"html", "json"};
-char* algorithm_names[] = {"lz4", "zstd"};
+char* algorithm_names[] = {"lz4", "zstd", "snappy"};
 
 double average_compression_ratio[TESTFILE_COUNT][ALGORITHM_COUNT], average_compression_speed[TESTFILE_COUNT][ALGORITHM_COUNT];
 
-void (* algorithms[])(char**, char**, double*, double*) = {lz4, zstd};
+void (* algorithms[])(char**, char**, double*, double*) = {lz4, zstd, snappy};
 
 char* data;
 char* compressed_data;

@@ -12,13 +12,11 @@
 
 void lz4(char** data, char** compressed_data, double* compression_ratio, double* compression_speed)
 {
-	const int data_size = (int)(strlen(*data));
+	const int data_size = (int)(strlen(*data) + 1);
 
 	const int max_compressed_size = LZ4_compressBound(data_size);
 
-	*compressed_data = (char*)malloc((size_t)max_compressed_size);
-	memset(*compressed_data, 0, max_compressed_size);
-
+	*compressed_data = (char*)calloc((size_t)max_compressed_size, sizeof(unsigned char));
 	if(*compressed_data == NULL)
 	{
 		fail("Failed to allocate memory for *compressed_data.", -1);
@@ -30,13 +28,13 @@ void lz4(char** data, char** compressed_data, double* compression_ratio, double*
 	const int compressed_data_size = LZ4_compress_default(*data, *compressed_data, data_size, max_compressed_size);
 	delta = clock() - start;
 
-	*compression_speed = data_size / 1048576.0 * ((double)CLOCKS_PER_SEC / delta); // MB/s
+	*compression_speed = data_size * CLOCKS_PER_SEC / (1048576.0 * delta); // MB/s
 
 	if(compressed_data_size <= 0)
 	{
 		fail("A 0 or negative result from LZ4_compress_default() indicates a failure trying to compress the data. ", 1);
 	}
-	*compression_ratio = (float)data_size / compressed_data_size;
+	*compression_ratio = (double)data_size / compressed_data_size;
 
 	*compressed_data = (char*)realloc(*compressed_data, (size_t)compressed_data_size); // reallocs memory to compressed_data_size
 	if(*compressed_data == NULL)
@@ -44,8 +42,7 @@ void lz4(char** data, char** compressed_data, double* compression_ratio, double*
 		fail("Failed to re-alloc memory for compressed_data.", -1);
 	}
 
-	char* uncompressed_data = (char*)malloc(data_size);
-	memset(uncompressed_data, 0, data_size);
+	char* uncompressed_data = (char*)calloc(data_size, sizeof(unsigned char));
 
 	if(uncompressed_data == NULL)
 	{

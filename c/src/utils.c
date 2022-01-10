@@ -21,7 +21,7 @@ int file_read(const char* file_path, char** content)
 	long size = ftell(fp);
 	rewind(fp);
 
-	if(!(*content = (char*)calloc(size, sizeof(char))))
+	if(!(*content = (char*)calloc(size, sizeof(unsigned char))))
 	{
 		fail("Failed to allocate memory\n", -1);
 	}

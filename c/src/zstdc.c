@@ -1,3 +1,5 @@
+// https://github.com/facebook/zstd/blob/dev/examples/simple_compression.c
+// https://github.com/facebook/zstd/blob/dev/examples/simple_decompression.c
 // Rahul Chalamala
 
 #include <stdlib.h>
@@ -10,12 +12,11 @@
 
 void zstd(char** data, char** compressed_data, double* compression_ratio, double* compression_speed, size_t compression_level)
 {
-	const size_t data_size = strlen(*data);
+	const size_t data_size = strlen(*data) + 1;
 
 	const size_t max_compressed_size = ZSTD_compressBound(data_size);
 
-	*compressed_data = (char*)malloc(max_compressed_size);
-	memset(*compressed_data, 0, max_compressed_size);
+	*compressed_data = (char*)calloc(max_compressed_size, sizeof(unsigned char));
 	if(*compressed_data == NULL)
 	{
 		fail("Failed to allocate memory for *compressed_data.", -1);
@@ -27,14 +28,14 @@ void zstd(char** data, char** compressed_data, double* compression_ratio, double
 	const size_t compressed_data_size = ZSTD_compress(*compressed_data, max_compressed_size, *data, data_size, compression_level);
 	delta = clock() - start;
 
-	*compression_speed = data_size / 1048576.0 * ((double)CLOCKS_PER_SEC / delta); // MB/s
+	*compression_speed = data_size * CLOCKS_PER_SEC / (1048576.0 * delta); // MB/s
 
 	if(ZSTD_isError(compressed_data_size))
 	{
 		fail(ZSTD_getErrorName(compressed_data_size), -1);
 	}
 
-	*compression_ratio = (float)data_size / compressed_data_size;
+	*compression_ratio = (double)data_size / compressed_data_size;
 
 	*compressed_data = (char*)realloc(*compressed_data, compressed_data_size); // reallocs memory to compressed_data_size
 	if(*compressed_data == NULL)
@@ -54,7 +55,7 @@ void zstd(char** data, char** compressed_data, double* compression_ratio, double
 		fail("original size unknown.", -1);
 	}
 
-	char* uncompressed_data = (char*)malloc(uncompressed_data_size);
+	char* uncompressed_data = (char*)calloc(uncompressed_data_size, sizeof(unsigned char));
 	memset(uncompressed_data, 0, uncompressed_data_size);
 
 	if(uncompressed_data == NULL)

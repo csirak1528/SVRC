@@ -1,4 +1,4 @@
-// https://github.com/madler/zlib/blob/master/test/example.c
+// https://github.com/madler/zlib/blob/master/zlib.h
 // Rahul Chalamala
 
 #include <string.h>
@@ -12,13 +12,11 @@
 
 void zlib(char** data, char** compressed_data, double* compression_ratio, double* compression_speed, size_t compression_level)
 {
-	size_t data_size = (size_t)(strlen(*data));
+	size_t data_size = strlen(*data) + 1;
 
 	size_t compressed_data_size = compressBound(data_size);
 
-	*compressed_data = (char*)malloc((size_t)compressed_data_size);
-	memset(*compressed_data, 0, compressed_data_size);
-
+	*compressed_data = (char*)calloc(compressed_data_size, sizeof(unsigned char));
 	if(*compressed_data == NULL)
 	{
 		fail("Failed to allocate memory for *compressed_data.", -1);
@@ -30,14 +28,14 @@ void zlib(char** data, char** compressed_data, double* compression_ratio, double
 	int error = compress2((Byte*)*compressed_data, &compressed_data_size, (const Bytef*)*data, data_size, compression_level);
 	delta = clock() - start;
 
-	*compression_speed = data_size / 1048576.0 * ((double)CLOCKS_PER_SEC / delta); // MB/s
+	*compression_speed = data_size * CLOCKS_PER_SEC / (1048576.0 * delta); // MB/s
 
 	if(error != Z_OK)
 	{
 		fail("zlib failed to compress the data. ", 1);
 	}
 
-	*compression_ratio = (float)data_size / compressed_data_size;
+	*compression_ratio = (double)data_size / compressed_data_size;
 
 	*compressed_data = (char*)realloc(*compressed_data, compressed_data_size); // reallocs memory to compressed_data_size
 	if(*compressed_data == NULL)
@@ -45,9 +43,7 @@ void zlib(char** data, char** compressed_data, double* compression_ratio, double
 		fail("Failed to re-alloc memory for compressed_data.", -1);
 	}
 
-	char* uncompressed_data = (char*)malloc(data_size);
-	memset(uncompressed_data, 0, data_size);
-
+	char* uncompressed_data = (char*)calloc(data_size, sizeof(unsigned char));
 	if(uncompressed_data == NULL)
 	{
 		fail("Failed to allocate memory for *uncompressed_data.", -1);

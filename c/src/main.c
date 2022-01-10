@@ -13,22 +13,25 @@
 
 const char* prefix = "/home/rahul/Documents/compression/SHVRC/testfiles/testfile.";
 
-#define TESTFILE_COUNT 2
+#define TESTFILE_COUNT 3
 #define ALGORITHM_COUNT 20
 #define TRIALS 100
 
-const char* filetypes[] = {"html", "json"};
+const char* filetypes[] = {"html",
+						   "json",
+						   "js"};
+
 char* algorithm_names[] = {"lz4",
 						   "zstd1", "zstd2","zstd3","zstd4","zstd5","zstd6","zstd7","zstd8","zstd9",
-						   "zlib1", "zlib2","zlib3","zlib4","zlib5","zlib6","zlib7","zlib8","zlib9",
-						   "snappy"};
+						  "zlib1", "zlib2","zlib3","zlib4","zlib5","zlib6","zlib7","zlib8","zlib9",
+						  "snappy"};
+
+void (*algorithms[])(char**, char**, double*, double*) = {lz4,
+														  zstd1, zstd2, zstd3, zstd4, zstd5, zstd6, zstd7, zstd8, zstd9,
+														 zlib1, zlib2, zlib3, zlib4, zlib5, zlib6, zlib7, zlib8, zlib9,
+														 snappy};
 
 double average_compression_ratio[TESTFILE_COUNT][ALGORITHM_COUNT], average_compression_speed[TESTFILE_COUNT][ALGORITHM_COUNT];
-
-void (* algorithms[])(char**, char**, double*, double*) = {lz4,
-														   zstd1, zstd2, zstd3, zstd4, zstd5, zstd6, zstd7, zstd8, zstd9,
-														   zlib1, zlib2, zlib3, zlib4, zlib5, zlib6, zlib7, zlib8, zlib9,
-														   snappy};
 
 char* data;
 char* compressed_data;
@@ -53,14 +56,17 @@ int main(void)
 
 			free(result);
 
-			for(int algorithm = 0; algorithm < ALGORITHM_COUNT; ++algorithm)
+			if(strlen(data) > 0)
 			{
-				(*algorithms[algorithm])(&data, &compressed_data, &compression_ratio, &compression_speed);
+				for(int algorithm = 0; algorithm < ALGORITHM_COUNT; ++algorithm)
+				{
+					(*algorithms[algorithm])(&data, &compressed_data, &compression_ratio, &compression_speed);
 
-				average_compression_ratio[testfile][algorithm] += compression_ratio;
-				average_compression_speed[testfile][algorithm] += compression_speed;
+					average_compression_ratio[testfile][algorithm] += compression_ratio;
+					average_compression_speed[testfile][algorithm] += compression_speed;
 
-				free(compressed_data);
+					free(compressed_data);
+				}
 			}
 
 			free(data);
@@ -124,7 +130,7 @@ int main(void)
 		fprintf(fp, "\t\"%s\":\n\t\t{\n", filetypes[testfile]);
 		for(int algorithm = 0; algorithm < ALGORITHM_COUNT; ++algorithm)
 		{
-			fprintf(fp, "\t\t\t\"%s\":\n\t\t\t\t{\n\t\t\t\t\t\"ratio\": %f,\n\t\t\t\t\t\"speed\": %f\n\t\t\t\t}", algorithm_names[algorithm], average_compression_ratio[testfile][algorithm], average_compression_speed[testfile][algorithm]);
+			fprintf(fp, "\t\t\t\"%s\":\n\t\t\t\t{\n\t\t\t\t\t\"ratio\": %.10f,\n\t\t\t\t\t\"speed\": %.10f\n\t\t\t\t}", algorithm_names[algorithm], average_compression_ratio[testfile][algorithm], average_compression_speed[testfile][algorithm]);
 			if(algorithm < ALGORITHM_COUNT - 1)
 			{
 				fputc(',', fp);
@@ -138,6 +144,5 @@ int main(void)
 		}
 		fputc('\n', fp);
 	}
-
 	fputs("}\n", fp);
 }

@@ -12,7 +12,7 @@
 
 void lz4(char** data, char** compressed_data, double* compression_ratio, double* compression_speed)
 {
-	const int data_size = (int)(strlen(*data) + 1);
+	const int data_size = (int)(strlen(*data));
 
 	const int max_compressed_size = LZ4_compressBound(data_size);
 
@@ -61,7 +61,7 @@ void lz4(char** data, char** compressed_data, double* compression_ratio, double*
 
 	if(uncompressed_size != data_size)
 	{
-		fail("uncompressed data is different from original!\n", -1);
+		fail("uncompressed size is different from original!\n", -1);
 	}
 
 	if(memcmp(*data, uncompressed_data, data_size) != 0)

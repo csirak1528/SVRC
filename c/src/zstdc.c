@@ -8,9 +8,9 @@
 
 #include "zstd.h"
 
-void zstd(char** data, char** compressed_data, double* compression_ratio, double* compression_speed)
+void zstd(char** data, char** compressed_data, double* compression_ratio, double* compression_speed, size_t compression_level)
 {
-	const size_t data_size = strlen(*data) + 1;
+	const size_t data_size = strlen(*data);
 
 	const size_t max_compressed_size = ZSTD_compressBound(data_size);
 
@@ -24,7 +24,7 @@ void zstd(char** data, char** compressed_data, double* compression_ratio, double
 	clock_t start, delta;
 
 	start = clock();
-	const size_t compressed_data_size = ZSTD_compress(*compressed_data, max_compressed_size, *data, data_size, 1);
+	const size_t compressed_data_size = ZSTD_compress(*compressed_data, max_compressed_size, *data, data_size, compression_level);
 	delta = clock() - start;
 
 	*compression_speed = data_size / 1048576.0 * ((double)CLOCKS_PER_SEC / delta); // MB/s
@@ -75,4 +75,49 @@ void zstd(char** data, char** compressed_data, double* compression_ratio, double
 	}
 
 	free(uncompressed_data);
+}
+
+void zstd1(char** data, char** compressed_data, double* compression_ratio, double* compression_speed)
+{
+	zstd(data, compressed_data, compression_ratio, compression_speed, 1);
+}
+
+void zstd2(char** data, char** compressed_data, double* compression_ratio, double* compression_speed)
+{
+	zstd(data, compressed_data, compression_ratio, compression_speed, 2);
+}
+
+void zstd3(char** data, char** compressed_data, double* compression_ratio, double* compression_speed)
+{
+	zstd(data, compressed_data, compression_ratio, compression_speed, 3);
+}
+
+void zstd4(char** data, char** compressed_data, double* compression_ratio, double* compression_speed)
+{
+	zstd(data, compressed_data, compression_ratio, compression_speed, 4);
+}
+
+void zstd5(char** data, char** compressed_data, double* compression_ratio, double* compression_speed)
+{
+	zstd(data, compressed_data, compression_ratio, compression_speed, 5);
+}
+
+void zstd6(char** data, char** compressed_data, double* compression_ratio, double* compression_speed)
+{
+	zstd(data, compressed_data, compression_ratio, compression_speed, 6);
+}
+
+void zstd7(char** data, char** compressed_data, double* compression_ratio, double* compression_speed)
+{
+	zstd(data, compressed_data, compression_ratio, compression_speed, 7);
+}
+
+void zstd8(char** data, char** compressed_data, double* compression_ratio, double* compression_speed)
+{
+	zstd(data, compressed_data, compression_ratio, compression_speed, 8);
+}
+
+void zstd9(char** data, char** compressed_data, double* compression_ratio, double* compression_speed)
+{
+	zstd(data, compressed_data, compression_ratio, compression_speed, 9);
 }

@@ -11,7 +11,7 @@
 
 void snappy(char** data, char** compressed_data, double* compression_ratio, double* compression_speed)
 {
-	size_t data_size = strlen(*data) + 1;
+	size_t data_size = strlen(*data);
 
 	size_t compressed_data_size = snappy_max_compressed_length(data_size);
 
@@ -65,5 +65,3 @@ void snappy(char** data, char** compressed_data, double* compression_ratio, doub
 
 	free(uncompressed_data);
 }
-
-

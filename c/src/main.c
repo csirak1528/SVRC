@@ -15,13 +15,13 @@ const char* prefix = "/home/rahul/Documents/compression/SHVRC/testfiles/testfile
 
 #define TESTFILE_COUNT 3
 #define ALGORITHM_COUNT 20
-#define TRIALS 100
+#define TRIALS 1000
 
 const char* filetypes[] = {"html",
 						   "json",
 						   "js"};
 
-char* algorithm_names[] = {"lz4",
+const char* algorithm_names[] = {"lz4",
 						   "zstd1", "zstd2","zstd3","zstd4","zstd5","zstd6","zstd7","zstd8","zstd9",
 						  "zlib1", "zlib2","zlib3","zlib4","zlib5","zlib6","zlib7","zlib8","zlib9",
 						  "snappy"};

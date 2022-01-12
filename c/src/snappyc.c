@@ -9,7 +9,7 @@
 #include "snappyc.h"
 #include "utils.h"
 
-void snappy(char** data, char** compressed_data, double* compression_ratio, double* compression_speed)
+void snappy(char** data, char** compressed_data, double* compression_ratio, double* compression_speed, size_t compression_level)
 {
 	size_t data_size = strlen(*data) + 1;
 

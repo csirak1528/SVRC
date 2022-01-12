@@ -10,7 +10,7 @@
 #include "lz4c.h"
 #include "utils.h"
 
-void lz4(char** data, char** compressed_data, double* compression_ratio, double* compression_speed)
+void lz4(char** data, char** compressed_data, double* compression_ratio, double* compression_speed, size_t compression_level)
 {
 	const int data_size = (int)(strlen(*data) + 1);
 

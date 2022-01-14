@@ -11,5 +11,5 @@ include_directories(include)
 file(GLOB_RECURSE SRC src/*.c)
 file(GLOB_RECURSE INCLUDES include/*.h)
 
-add_executable(c src/lz4c.c include/lz4c.h src/utils.c include/utils.h)
+add_executable(c ${SRC} ${INCLUDES})
 target_link_libraries(c ${CONAN_LIBS})

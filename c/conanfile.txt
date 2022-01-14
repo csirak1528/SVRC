@@ -1,6 +1,8 @@
 [requires]
 lz4/1.9.3@
 zstd/1.5.0@
+zlib/1.2.11@
+snappy/1.1.9@
 
 [generators]
 cmake

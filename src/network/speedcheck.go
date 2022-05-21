@@ -1,7 +1,6 @@
 package network
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -17,7 +16,6 @@ func Ping(x chan float64, accuracy time.Duration) {
 	// Run benchmark
 	rate := speedtest.RunBenchmark(benchmark, 4, 16, time.Second*accuracy)
 	// Print result (bps)
-	fmt.Println(rate * 8 / (1024 * 1024))
 	speed := speedtest.NiceRate(rate)
 	//create storageArr
 	nums := make([]byte, len(speed))

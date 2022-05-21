@@ -1,7 +1,7 @@
 package main
 
 import (
-	compression "github.com/csirak1528/shvrc/golang/src/compressionLibs"
+	compression "github.com/csirak1528/svrc/golang/src/compressionLibs"
 )
 
 func main() {

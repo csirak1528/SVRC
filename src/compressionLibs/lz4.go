@@ -13,12 +13,13 @@ func CompressLZ4(data []byte) map[string]float64 {
 	ht := make([]int, 64<<10)
 	n, err := lz4.CompressBlock(data, buf, ht)
 	Check(err)
-	outBody := map[string]float64{"totalTime": 0, "ratio": 1}
+	outBody := map[string]float64{"speed": 0, "ratio": 1}
 	if !(n >= len(data) || n == 0) {
-		o := float64(n) / float64(1024*1024)
+		o := float64(len(data))
 		end := float64(time.Since(start).Seconds())
 		totalTime := (o / end)
-		outBody = map[string]float64{"totalTime": totalTime, "ratio": (float64(len(data)) / float64(n)), "speed": (float64(len(data)) / (totalTime / 1000))}
+		outBody = map[string]float64{"speed": totalTime, "ratio": (float64(len(data)) / float64(n)), "size": float64(len(data) / (1024 * 1024))}
+
 	}
 	return outBody
 	// Allocated a very large buffer for decompression.

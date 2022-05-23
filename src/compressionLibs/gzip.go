@@ -1,38 +1,42 @@
 package compressionLibs
 
 import (
+	"bytes"
+	"compress/flate"
+	"compress/gzip"
 	"os"
 	"time"
-
-	"github.com/DataDog/zstd"
 )
 
-func CompressZSTD(data []byte, level int) map[string]float64 {
+func CompressGZIP(data []byte, level int) map[string]float64 {
 	start := time.Now()
-	out, err := zstd.CompressLevel(nil, data, level)
-	n := len(out)
+	var out bytes.Buffer
+	w, err := gzip.NewWriterLevel(&out, level)
 	Check(err)
+	w.Write(data)
+	w.Close()
+	n := out.Len()
 	outBody := map[string]float64{"speed": 0, "ratio": 1}
 	if !(n >= len(data) || n == 0) {
 		o := float64(len(data))
 		end := float64(time.Since(start).Seconds())
 		totalTime := (o / end)
-		outBody = map[string]float64{"speed": totalTime, "ratio": (float64(len(data)) / float64(n)), "size": float64(len(data))}
-
+		outBody = map[string]float64{"speed": totalTime, "ratio": (float64(len(data)) / float64(n)), "size": float64(len(data) / (1024 * 1024))}
 	}
 	return outBody
+
 }
 
-func GetBenchmarksZSTD() map[string]interface{} {
+func GetBenchmarksGZIP() map[string]interface{} {
 	benchmarks := make(map[string]map[int]interface{})
-	levels := 22
+	levels := flate.BestCompression
 	for i := range BenchmarkFileData {
 		benchmarkFileType := BenchmarkFileData[i]
 		testBytes, err := os.ReadFile(benchmarkFileType["path"])
 		Check(err)
 		benchmarks[benchmarkFileType["type"]] = make(map[int]interface{})
-		for j := 1; j <= levels; j++ {
-			filebenchmarks := CompressZSTD(testBytes, j)
+		for j := flate.BestSpeed; j <= levels; j++ {
+			filebenchmarks := CompressGZIP(testBytes, j)
 			benchmarks[benchmarkFileType["type"]][j] = filebenchmarks
 		}
 	}

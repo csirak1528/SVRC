@@ -12,19 +12,20 @@ func CompressZLIB(data []byte, level int) map[string]float64 {
 	start := time.Now()
 
 	var out bytes.Buffer
-	w := zlib.NewWriter(&out)
+	w, err := zlib.NewWriterLevel(&out, level)
+	Check(err)
 	w.Write(data)
 	w.Close()
 	n := out.Len()
-	outBody := map[string]float64{"totalTime": 0, "ratio": 1}
+	outBody := map[string]float64{"speed": 0, "ratio": 1}
 	if !(n >= len(data) || n == 0) {
-		o := float64(n) / float64(1024*1024)
+		o := float64(len(data))
 		end := float64(time.Since(start).Seconds())
 		totalTime := (o / end)
-		outBody = map[string]float64{"totalTime": totalTime, "ratio": (float64(len(data)) / float64(n)), "speed": (float64(len(data)) / (totalTime / 1000))}
+		outBody = map[string]float64{"speed": totalTime, "ratio": (float64(len(data)) / float64(n)), "size": float64(len(data) / (1024 * 1024))}
+
 	}
 	return outBody
-
 }
 
 func GetBenchmarksZLIB() map[string]interface{} {
@@ -40,5 +41,5 @@ func GetBenchmarksZLIB() map[string]interface{} {
 			benchmarks[benchmarkFileType["type"]][j] = filebenchmarks
 		}
 	}
-	return map[string]interface{}{"benchmarks": benchmarks}
+	return map[string]interface{}{"benchmarks": benchmarks, "levels": levels}
 }

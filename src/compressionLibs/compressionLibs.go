@@ -22,8 +22,8 @@ func InitCompression() {
 
 	benchmarks := make(map[string]map[string]interface{})
 
-	for i := range supported {
-		alg := supported[i]
+	for i := range Supported {
+		alg := Supported[i]
 		benchmarks[alg] = GetBenchmarks(alg)
 
 	}
@@ -42,9 +42,9 @@ func getFileName(filetype string) map[string]string {
 }
 
 func GenerateTestFiles() []map[string]string {
-	pathBodies := make([]map[string]string, len(supportedFileTypes))
-	for i := range supportedFileTypes {
-		filetype := supportedFileTypes[i]
+	pathBodies := make([]map[string]string, len(SupportedFileTypes))
+	for i := range SupportedFileTypes {
+		filetype := SupportedFileTypes[i]
 		pathBodies[i] = getFileName(filetype)
 	}
 	return pathBodies
@@ -60,15 +60,17 @@ func GetBenchmarks(alg string) map[string]interface{} {
 		return GetBenchmarksZLIB()
 	case "snappy":
 		return GetBenchmarksSNAPPY()
+	case "gzip":
+		return GetBenchmarksGZIP()
 	default:
 		return map[string]interface{}{}
 	}
 }
 
-var supported = []string{
-	"lz4", "zstd", "snappy", "zlib",
+var Supported = []string{
+	"lz4", "zstd", "snappy", "zlib", "gzip",
 }
-var supportedFileTypes = []string{
+var SupportedFileTypes = []string{
 	"html", "json", "mp3", "png",
 }
 

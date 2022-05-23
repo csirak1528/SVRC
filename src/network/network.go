@@ -23,3 +23,11 @@ func Init() {
 func Connect() {
 
 }
+
+func StartNetworkSpeedLiveUpdates(x chan float64) {
+	for true {
+		speed := Ping(4)
+		x <- speed
+	}
+
+}

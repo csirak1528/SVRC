@@ -2,7 +2,7 @@ package analysis
 
 // Sirak Compression Transfer Formula
 
-func Sctf(fs, tv, cr, cv int) int {
-	efficiency := (fs / tv) / (((fs / cr) / tv) + (fs / cv))
+func Sctf(tv, cr, cv float64) float64 {
+	efficiency := 1 / ((1 / cr) + (tv / cv))
 	return efficiency
 }

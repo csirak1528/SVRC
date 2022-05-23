@@ -8,7 +8,7 @@ import (
 	"github.com/johnsto/speedtest"
 )
 
-func Ping(x chan float64, accuracy time.Duration) {
+func Ping(accuracy time.Duration) float64 {
 	// Fetch server list
 	settings, _ := speedtest.FetchSettings()
 	// Configure benchmark
@@ -33,5 +33,5 @@ func Ping(x chan float64, accuracy time.Duration) {
 	if err != nil {
 		panic(err)
 	}
-	x <- speedNum
+	return (speedNum * (1024 * 1024)) / 8
 }

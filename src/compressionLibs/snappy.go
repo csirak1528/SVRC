@@ -12,12 +12,13 @@ func CompressSNAPPY(data []byte) map[string]float64 {
 
 	out := snappy.Encode(nil, data)
 	n := len(out)
-	outBody := map[string]float64{"totalTime": 0, "ratio": 1}
+	outBody := map[string]float64{"speed": 0, "ratio": 1}
 	if !(n >= len(data) || n == 0) {
-		o := float64(n) / float64(1024*1024)
+		o := float64(len(data))
 		end := float64(time.Since(start).Seconds())
 		totalTime := (o / end)
-		outBody = map[string]float64{"totalTime": totalTime, "ratio": (float64(len(data)) / float64(n)), "speed": (float64(len(data)) / (totalTime / 1000))}
+		outBody = map[string]float64{"speed": totalTime, "ratio": (float64(len(data)) / float64(n)), "size": float64(len(data) / (1024 * 1024))}
+
 	}
 	return outBody
 
@@ -25,6 +26,7 @@ func CompressSNAPPY(data []byte) map[string]float64 {
 
 func GetBenchmarksSNAPPY() map[string]interface{} {
 	benchmarks := make(map[string]interface{})
+
 	for i := range BenchmarkFileData {
 		benchmarkFileType := BenchmarkFileData[i]
 		testBytes, err := os.ReadFile(benchmarkFileType["path"])
@@ -32,5 +34,6 @@ func GetBenchmarksSNAPPY() map[string]interface{} {
 		filebenchmarks := CompressSNAPPY(testBytes)
 		benchmarks[benchmarkFileType["type"]] = filebenchmarks
 	}
+
 	return map[string]interface{}{"benchmarks": benchmarks}
 }
